@@ -1,0 +1,13 @@
+{
+  "name": "frontend-susybasic",
+  "version": "1.0.0",
+  "authors": [
+    "Calvin Cheng <linchuan.cheng@gmail.com>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "susy": "~2.2.1",
+    "normalize-scss": "~3.0.2"
+  }
+}
