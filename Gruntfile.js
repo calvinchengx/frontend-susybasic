@@ -33,7 +33,7 @@ module.exports = function(grunt) {
         partials: 'sass/_partials',
         partialsWatch: 'sass/_partials/**/*.{scss,sass}',
         src: 'sass/*.{scss,sass}'
-      },
+      }
     },
     // our tasks
     browserify: {
@@ -93,20 +93,6 @@ module.exports = function(grunt) {
             port: 8000
         }
     },
-    open: {
-        chrome: {
-            path: 'http://localhost:<%= server.web.port %>',
-            app: 'Google Chrome'
-        },
-        firefox: {
-            path: 'http://localhost:<%= server.web.port %>',
-            app: 'Firefox'
-        },
-        safari: {
-            path: 'http://localhost:<%= server.web.port %>',
-            app: 'Safari'
-        }
-    },
     watch: {
         options: {
             livereload: true
@@ -128,6 +114,17 @@ module.exports = function(grunt) {
             tasks: ['sass:dev']
         }
     },
+    browserSync: {
+        bsFiles: {
+            src: ['generated/css/styles.css', 'generated/index.html']
+        },
+        options: {
+            watchTask: true,
+            proxy: 'localhost:<%= server.web.port %>',
+            open: true,
+            browser: ['google chrome', 'firefox', 'safari']
+        }
+    },
     // one-off task 'grunt clean', which clears our generated files and build files.
     clean: {
         workspaces: ['dist', 'generated']
@@ -144,7 +141,7 @@ module.exports = function(grunt) {
   require('matchdep').filterAll('grunt-*').forEach(grunt.loadNpmTasks);
 
   // creating workflows
-  grunt.registerTask('default', ['copy', 'sass:dev', 'browserify', 'concat', 'server', 'open', 'watch']);
+  grunt.registerTask('default', ['copy', 'sass:dev', 'browserify', 'concat', 'server', 'browserSync', 'watch']);
   grunt.registerTask('build', ['copy', 'sass:dist', 'browserify', 'concat', 'uglify']);
   grunt.registerTask('prodsim', ['build', 'server', 'open', 'watch']);
 
