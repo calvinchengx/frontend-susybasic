@@ -27,12 +27,12 @@ module.exports = function(grunt) {
       sass: {
         vendor: [
           'bower_components/normalize-scss',
-          'bower_components/susy/sass'
+          'bower_components/susy/sass',
+          '<%= files.sass.partials %>'
         ],
-        src: [
-            'sass/**/*.{scss,sass}', 
-            'sass/_partials/**/*.{scss,sass}'
-        ]
+        partials: 'sass/_partials',
+        partialsWatch: 'sass/_partials/**/*.{scss,sass}',
+        src: 'sass/*.{scss,sass}'
       },
     },
     // our tasks
@@ -94,8 +94,17 @@ module.exports = function(grunt) {
         }
     },
     open: {
-        dev: {
-            path: 'http://localhost:<%= server.web.port %>'
+        chrome: {
+            path: 'http://localhost:<%= server.web.port %>',
+            app: 'Google Chrome'
+        },
+        firefox: {
+            path: 'http://localhost:<%= server.web.port %>',
+            app: 'Firefox'
+        },
+        safari: {
+            path: 'http://localhost:<%= server.web.port %>',
+            app: 'Safari'
         }
     },
     watch: {
@@ -115,7 +124,7 @@ module.exports = function(grunt) {
             tasks: ['browserify', 'concat']
         },
         sass: {
-            files: ['<%= files.sass.src %>'],
+            files: ['<%= files.sass.src %>', '<%= files.sass.partialsWatch %>'],
             tasks: ['sass:dev']
         }
     },
