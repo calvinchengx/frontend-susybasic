@@ -1,6 +1,8 @@
 module.exports = function(grunt) {
   'use strict';
 
+  var browserSync = require("browser-sync");
+
   // task configurations
   var config = {
     // meta data from package.json
@@ -78,6 +80,14 @@ module.exports = function(grunt) {
         }
       }
     },
+    autoprefixer: {
+      options: {
+        browsers: ['ie 8', 'ie 7']
+      },
+      noDestMultiple: {
+        src: ['generated/css/styles.css', 'dist/css/styles.css']
+      }
+    },
     uglify: {
       options: {
         banner: '<%= banner %>'
@@ -111,21 +121,9 @@ module.exports = function(grunt) {
         },
         sass: {
             files: ['<%= files.sass.src %>', '<%= files.sass.partialsWatch %>'],
-            tasks: ['sass:dev']
+            tasks: ['sass:dev', 'autoprefixer', 'bsInject']
         }
     },
-    browserSync: {
-        bsFiles: {
-            src: ['generated/css/styles.css', 'generated/index.html']
-        },
-        options: {
-            watchTask: true,
-            proxy: 'localhost:<%= server.web.port %>',
-            open: true,
-            browser: ['google chrome', 'firefox', 'safari']
-        }
-    },
-    // one-off task 'grunt clean', which clears our generated files and build files.
     clean: {
         workspaces: ['dist', 'generated']
     }
@@ -140,9 +138,33 @@ module.exports = function(grunt) {
   // loading external tasks (aka: plugins)
   require('matchdep').filterAll('grunt-*').forEach(grunt.loadNpmTasks);
 
+  // custom task bsInject that uses browserSync to monitor and inject styles.css
+  // bsInject is used by the sass task above
+  grunt.registerTask('bsInject', function () {
+    console.log('Inject prefixed css');
+    browserSync.reload(['generated/css/styles.css']);
+  });
+
+  // custom task bsInit that is called by the default task
+  grunt.registerTask('bsInit', function() {
+    var done = this.async();
+    browserSync({
+      watchTask: true,
+      proxy: 'localhost:8000',
+      open: true,
+      browser: ['google chrome', 'firefox', 'safari'],
+      files: [
+        'generated/css/styles.css',
+        'generated/index.html'
+      ]
+    }, function() {
+        done();
+    });
+  });
+
   // creating workflows
-  grunt.registerTask('default', ['copy', 'sass:dev', 'browserify', 'concat', 'server', 'browserSync', 'watch']);
-  grunt.registerTask('build', ['copy', 'sass:dist', 'browserify', 'concat', 'uglify']);
+  grunt.registerTask('default', ['copy', 'sass:dev', 'browserify', 'concat', 'server', 'bsInit', 'watch']);
+  grunt.registerTask('build', ['copy', 'sass:dist', 'autoprefixer', 'browserify', 'concat', 'uglify']);
   grunt.registerTask('prodsim', ['build', 'server', 'open', 'watch']);
 
 };
