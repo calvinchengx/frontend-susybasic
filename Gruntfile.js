@@ -17,6 +17,9 @@ module.exports = function(grunt) {
       html: {
         src: 'index.html'
       },
+      img: {
+        src: 'img/*.{png,jpg,jpeg,gif}'
+      },
       js: {
         vendor: [
           'bower_components/mithril/mithril.min.js'
@@ -97,6 +100,18 @@ module.exports = function(grunt) {
         dest: 'dist/js/vendor.min.js'
       }
     },
+    imagemin: {
+      dev: {
+        cwd: 'img/',
+        src: ['**/*.{png,jpg,jpeg,gif}'],
+        dest: 'generated/img/'
+      } ,
+      dist: {
+        cwd: 'img/',
+        src: ['**/*.{png,jpg,jpeg,gif}'],
+        dest: 'dist/img/'
+      }
+    },
     server: {
         base: (process.env.SERVER_BASE || 'generated'),
         web: {
@@ -122,6 +137,10 @@ module.exports = function(grunt) {
         sass: {
             files: ['<%= files.sass.src %>', '<%= files.sass.partialsWatch %>'],
             tasks: ['sass:dev', 'autoprefixer', 'bsInject']
+        },
+        img: {
+            files: ['<%= files.img.src %>'],
+            tasks: ['imagemin']
         }
     },
     clean: {
@@ -163,8 +182,8 @@ module.exports = function(grunt) {
   });
 
   // creating workflows
-  grunt.registerTask('default', ['copy', 'sass:dev', 'browserify', 'concat', 'server', 'bsInit', 'watch']);
-  grunt.registerTask('build', ['copy', 'sass:dist', 'autoprefixer', 'browserify', 'concat', 'uglify']);
+  grunt.registerTask('default', ['copy', 'newer:imagemin:dev', 'sass:dev', 'browserify', 'concat', 'server', 'bsInit', 'watch']);
+  grunt.registerTask('build', ['copy', 'imagemin:dist', 'sass:dist', 'autoprefixer', 'browserify', 'concat', 'uglify']);
   grunt.registerTask('prodsim', ['build', 'server', 'open', 'watch']);
 
 };
