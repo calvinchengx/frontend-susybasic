@@ -1,10 +1,11 @@
 @import "normalize";
 @import "susy";
 
-// mobile first
+// mobile first and global settings
 $susy : (
   columns: 4, 
   gutters: .25,
+  global-box-sizing: border-box,
   debug: (image: show)
 );
 
@@ -38,4 +39,55 @@ $desktop-layout: (
     @include show-grid(map-get($desktop-layout, columns));
     color: red;
   }
+}
+
+section {
+}
+
+.hero {
+  background: grey;
+  min-height: 80vh;
+}
+
+.benefits {
+  background: white;
+  min-height: 80vh;
+}
+
+.benefits-2 {
+  background: yellow;
+  min-height: 80vh;
+}
+
+.call-to-action {
+  background: orange;
+  min-height: 80vh;
+}
+
+.section__content {
+  @include container;
+  min-width: 480px;
+  margin: 0 10%;   
+
+  // tablet
+  @include susy-breakpoint($tablet-media, $tablet-layout) {
+    @include container;
+    min-width: 800px;
+    margin: 0 10%;   
+  }
+
+  @include susy-breakpoint($desktop-media, $desktop-layout) {
+    @include container;
+    min-width: 1200px;
+    margin: 0 10%;   
+  }
+
+}
+
+.tagline {
+  @include span(2 of 4);
+}
+
+.iphone {
+
 }
