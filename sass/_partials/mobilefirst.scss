@@ -1,25 +1,41 @@
 @import "normalize";
 @import "susy";
 
+// mobile first
 $susy : (
   columns: 4, 
   gutters: .25,
   debug: (image: show)
 );
-  
-.wrap {
-  @include container(1140px);
-  // Forces wrap to full height. 
-  height: 100vh;
-  
-  // Changing to a 8 column grid
-  @media (min-width: 800px) {
-    @include show-grid(8);
-  }    
-  
-  // Changing to a 12 column grid
-  @media (min-width: 1200px) {
-    @include show-grid(12);
-  }
- }
 
+// tablet
+$tablet-media: 800px;
+$tablet-layout: (
+  min-width: 800px,
+  columns: 8
+);
+
+// desktop
+$desktop-media: 1200px;
+$desktop-layout: (
+  min-width: 1200px, 
+  columns: 12 
+);
+
+.wrap {
+  // mobile first
+  @include container;
+  color: green;
+
+  // tablet
+  @include susy-breakpoint($tablet-media, $tablet-layout) {
+    @include show-grid(map-get($tablet-layout, columns));
+    color: blue;
+  }
+
+  // desktop
+  @include susy-breakpoint($desktop-media, $desktop-layout) {
+    @include show-grid(map-get($desktop-layout, columns));
+    color: red;
+  }
+}
